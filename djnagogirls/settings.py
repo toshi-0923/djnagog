@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
-
+import dj_database_url
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -20,12 +20,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '%p=o(*yn8&07jnydl3dfmc*cei2c52uw%nn62*@v62o7(x-ao5'
+#SECRET_KEY = '%p=o(*yn8&07jnydl3dfmc*cei2c52uw%nn62*@v62o7(x-ao5'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
 
 
 # Application definition
@@ -74,10 +74,21 @@ WSGI_APPLICATION = 'djnagogirls.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#    }
+#}
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'name',
+        'USER': 'user',
+        'PASSWORD': '',
+        'HOST': 'host',
+        'PORT': '',
     }
 }
 
@@ -120,3 +131,16 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STAIC_ROOT = os.path.join(BASE_DIR, "static")
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass
+
+if not DEBUG:
+    SECRET_KEY = os.environ['SECRET_KEY']
+    import django_heroku #追加
+    django_heroku.settings(locals()) #追加
+    
+db_from_env = dj_database_url.config(conn_max_age=600, ssl_require=True)
+DATABASES['default'].update(db_from_env)
