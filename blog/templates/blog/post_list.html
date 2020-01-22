@@ -1,9 +1,13 @@
+{% load static %}
 <html>
+<head>
+    <link rel="stylesheet" href="{% static 'css/blog.css' %}">
+    <link href="//fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext" rel="stylesheet" type="text/css">
 <body>
     <p>Hi there!</p>
     <p>It works!</p>
     {% for item in posts %}
-    <div>{{item}}</div>
+    <div class="method">{{item}}</div>
     {% endfor %}
 </body>
 </html>
